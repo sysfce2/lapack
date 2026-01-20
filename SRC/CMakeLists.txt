@@ -578,6 +578,11 @@ add_library(${LAPACKLIB}
   $<TARGET_OBJECTS:mod_files>
   $<TARGET_OBJECTS:${LAPACKLIB}_obj>
   $<$<BOOL:${BUILD_INDEX64_EXT_API}>: $<TARGET_OBJECTS:${LAPACKLIB}_64_obj>>)
+# For flang, use C linker instead of Fortran linker to avoid macOS-specific flags
+# that CMake adds (tested CMake 4.2).
+if (CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang")
+   set_target_properties (${LAPACKLIB} PROPERTIES LINKER_LANGUAGE C)
+endif()
 set_target_properties(
   ${LAPACKLIB} PROPERTIES
   VERSION ${LAPACK_VERSION}
